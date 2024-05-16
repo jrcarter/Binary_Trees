@@ -13,26 +13,10 @@ procedure Bt_Test_2 is
 
    procedure Put is new Char_Trees.Put (Image => Image);
 
-   procedure Insert (Into : in out Char_Trees.Handle; S : in String);
-   -- If S /= "", inserts the middle character of S into Into, then calls itself with the substrings to the left & right of there
-
    procedure Process (Item : in Character);
    -- Writes Item to the current output
 
    procedure Write is new Char_Trees.Traverse (Process => Process);
-
-   procedure Insert (Into : in out Char_Trees.Handle; S : in String) is
-      Mid : Positive;
-   begin -- Insert
-      if S = "" then
-         return;
-      end if;
-
-      Mid := (S'First + S'Last) / 2;
-      Into.Insert (Value => S (Mid) );
-      Insert (Into => Into, S => S (S'First .. Mid - 1) );
-      Insert (Into => Into, S => S (Mid + 1 .. S'Last) );
-   end Insert;
 
    procedure Process (Item : in Character) is
       -- Empty
@@ -40,9 +24,16 @@ procedure Bt_Test_2 is
       Ada.Text_IO.Put (Item => Item);
    end Process;
 
+   Input : constant String := "tdihpralygbqzfmwoujcknevsx"; -- A random permutation of the alphabet; yields an unbalanced tree
+
    Tree : Char_Trees.Handle;
 begin -- Bt_Test_2
-   Insert (Into => Tree, S => "abcdefghijklmnopqrstuvwxyz");
+   Ada.Text_IO.Put_Line (Item => Input);
+
+   Insert : for S of Input loop
+      Tree.Insert (Value => S);
+   end loop Insert;
+
    Put (Tree => Tree);
    Write (Tree => Tree, Order => Char_Trees.In_Order);
 end Bt_Test_2;
